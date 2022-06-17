@@ -16,6 +16,7 @@ export default Controller.extend({
   fromDate: "",
   visibleGroupIds: [],
   includedGroupIds: [],
+  isGroupLeaderboard: false,
 
   @discourseComputed("model.leaderboards.@each.updated_at")
   sortedLeaderboards(leaderboards) {
@@ -45,6 +46,7 @@ export default Controller.extend({
       "includedGroupIds",
       this.filterGroupsById(leaderboard.included_groups_ids)
     );
+    this.set("isGroupLeaderboard", leaderboard.is_group_leaderboard);
   },
 
   filterGroupsById(groupIds) {
@@ -103,6 +105,7 @@ export default Controller.extend({
       fromDate: "",
       visibleGroupIds: [],
       includedGroupIds: [],
+      isGroupLeaderboard: false,
     });
   },
 
@@ -140,6 +143,7 @@ export default Controller.extend({
       from_date: this.fromDate,
       visible_to_groups_ids: this.visibleGroupIds,
       included_groups_ids: this.includedGroupIds,
+      is_group_leaderboard : this.isGroupLeaderboard,
     };
 
     return ajax(
@@ -163,6 +167,12 @@ export default Controller.extend({
             this.includedGroupIds
           );
         }
+        if (this.isGroupLeaderboard) {
+          this.selectedLeaderboard.set(
+            "is_group_leaderboard",
+            this.isGroupLeaderboard
+          );
+        }
         this.setProperties({
           loading: false,
           selectedLeaderboardId: null,
@@ -170,6 +180,7 @@ export default Controller.extend({
           fromDate: "",
           visibleGroupIds: [],
           includedGroupIds: [],
+          isGroupLeaderboard: false,
         });
       })
       .catch(popupAjaxError);
