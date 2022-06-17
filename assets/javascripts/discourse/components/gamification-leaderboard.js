@@ -32,11 +32,20 @@ export default Component.extend(LoadMore, {
 
   @discourseComputed("model.users.[]")
   ranking(users) {
+
     users.forEach((user) => {
       if (user.id === this.currentUser?.id) {
         user.isCurrentUser = "true";
+        console.log(user)
       }
     });
+
+    console.log(this.model)
+
+    if (this.model.leaderboard.is_group_leaderboard){
+      return users;
+    }
+
     return users.slice(3);
   },
 
@@ -55,6 +64,7 @@ export default Component.extend(LoadMore, {
 
     return ajax(`/leaderboard/${this.model.leaderboard.id}?page=${this.page}`)
       .then((result) => {
+        console.log(result)
         if (result.users.length === 0) {
           this.set("canLoadMore", false);
         }

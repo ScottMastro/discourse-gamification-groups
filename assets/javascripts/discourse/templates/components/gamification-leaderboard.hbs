@@ -20,7 +20,17 @@
         </div>
       {{/each}}
     </div>
+
+  {{#if model.leaderboard.is_group_leaderboard}}
+    <div class="group__ranking">
+      {{#each model.leaderboard.included_groups_ids as |rank index|}}
+        {{gamification-leaderboard-row rank=rank index=index}}
+      {{/each}}
+    </div>
+  {{/if}}
+
   </div>
+
 
   <div class="ranking">
     <div class="ranking-col-names">
