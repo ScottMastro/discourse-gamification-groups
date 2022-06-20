@@ -137,7 +137,7 @@ jobs:
         if: matrix.build_type == 'backend' && steps.check_spec.outputs.files_exist == 'true'
         run: bin/rake plugin:spec[${{ github.event.repository.name }}]
 
-      - name: Check Qunit existence
+      - name: Check QUnit existence
         id: check_qunit
         shell: bash
         run: |
