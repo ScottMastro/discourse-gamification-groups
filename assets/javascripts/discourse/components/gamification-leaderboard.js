@@ -27,7 +27,18 @@ export default Component.extend(LoadMore, {
 
   @discourseComputed("model.users")
   winners(users) {
+    if (this.model.leaderboard.is_group_leaderboard){
+      return this.model.groups.slice(0, 3);
+    }
     return users.slice(0, 3);
+  },
+  
+  is_group_leaderboard() {
+    return this.model.leaderboard.is_group_leaderboard;
+  },
+
+  group_ranking() {
+    return this.model.groups; //.slice(3);
   },
 
   @discourseComputed("model.users.[]")
@@ -36,7 +47,6 @@ export default Component.extend(LoadMore, {
     users.forEach((user) => {
       if (user.id === this.currentUser?.id) {
         user.isCurrentUser = "true";
-        console.log(user)
       }
     });
 

@@ -39,7 +39,7 @@ class DiscourseGamification::GamificationLeaderboard < ::ActiveRecord::Base
     users = users.where("gamification_scores.date BETWEEN ? AND ?", leaderboard.from_date, leaderboard.to_date) if leaderboard.from_date.present?
     # calculate scores up to to_date if just to_date is present
     users = users.where("gamification_scores.date <= ?", leaderboard.to_date) if leaderboard.to_date != Date.today && !leaderboard.from_date.present?
-    groups = users.select("groups.id as id, #{sum_sql}").group("groups.id")
+    groups = users.select("groups.id as id, groups.name as name, groups.flair_url, groups.flair_color, groups.flair_bg_color, groups.user_count, #{sum_sql}").group("groups.id")
     
     groups
   end

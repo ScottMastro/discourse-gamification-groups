@@ -26,6 +26,7 @@ en:
         included_groups_help: "The groups that will be included in the leaderboard."
         group_leaderboard: "Group leaderboard"
         group_leaderboard_help: "Show groups on leaderboard instead of individuals"
+        group_user_breakdown: "User Breakdown"
       create: "Create"
       cancel: "Cancel"
       delete: "Delete"

@@ -21,40 +21,48 @@
       {{/each}}
     </div>
 
-  {{#if model.leaderboard.is_group_leaderboard}}
-    <div class="group__ranking">
-      {{#each model.leaderboard.included_groups_ids as |rank index|}}
-        {{gamification-leaderboard-row rank=rank index=index}}
-      {{/each}}
-    </div>
-  {{/if}}
-
+    {{#if is_group_leaderboard}}
+      <div class="ranking-col-group ranking-col-names">
+        <span>Rank</span>
+        <span>{{d-icon "award"}}{{i18n "gamification.score"}}</span>
+      </div>
+      <div class="group__ranking">
+        {{#each model.groups as |group index|}}
+          {{gamification-leaderboard-group-row group=group index=index}}
+        {{/each}}
+      </div>
+    {{/if}}
   </div>
 
 
   <div class="ranking">
+    {{#if is_group_leaderboard}}
+      <div class="group-breakdown-header">{{i18n "gamification.leaderboard.group_user_breakdown"}}</div>
+      <hr>
+    {{/if}}
     <div class="ranking-col-names">
       <span>Rank</span>
       <span>{{d-icon "award"}}{{i18n "gamification.score"}}</span>
     </div>
     <div class="ranking-col-names__sticky-border"></div>
     {{#if currentUserRanking}}
-      <a href="#leaderboard-user-{{ currentUserRanking.user.id }}" class="user -self">
-        <div class="user__rank">{{ currentUserRanking.position }}</div>
-        <div class="user__name">{{i18n "gamification.you"}}</div>
-        <div class="user__score">
+      <a href="#leaderboard-user-{{ currentUserRanking.user.id }}" class="rank-row -self">
+        <div class="rank-row__rank">{{ currentUserRanking.position }}</div>
+        <div class="rank-row__name">{{i18n "gamification.you"}}</div>
+        <div class="rank-row__score">
           {{#if site.mobileView}}
             {{number currentUserRanking.total_score}}
           {{else}}
             {{fullnumber currentUserRanking.total_score}}
           {{/if}}
+
         </div>
       </a>
     {{/if}}
 
     {{#load-more selector=".user" action=(action "loadMore")}}
       {{#each ranking as |rank index|}}
-        {{gamification-leaderboard-row rank=rank index=index}}
+        {{gamification-leaderboard-row rank=rank index=index is_group_leaderboard=is_group_leaderboard}}
       {{/each}}
     {{/load-more}}
     {{conditional-loading-spinner condition=loading}}

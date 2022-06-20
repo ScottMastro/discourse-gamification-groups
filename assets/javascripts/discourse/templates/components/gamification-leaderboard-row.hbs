@@ -1,10 +1,14 @@
-<div class="user {{if rank.currentUser "user-highlight"}}" id="leaderboard-user-{{rank.id}}">
-  <div class="user__rank">{{sum index 4}}</div>
-  <div class="user__avatar clickable" role="button" data-user-card={{rank.username}}>
+<div class="rank-row {{if rank.currentUser "rank-row-highlight"}}" id="leaderboard-user-{{rank.id}}">
+  {{#if is_group_leaderboard}}
+    <div class="rank-row__rank">{{sum index 1}}</div>
+  {{else}}
+    <div class="rank-row__rank">{{sum index 4}}</div>
+  {{/if}}
+  <div class="rank-row__avatar clickable" role="button" data-user-card={{rank.username}}>
     {{avatar rank imageSize="large"}}
-    <span class="user__name">{{rank.username}}</span>
+    <span class="rank-row__name">{{rank.username}}</span>
   </div>
-  <div class="user__score">
+  <div class="rank-row__score">
     {{#if site.mobileView}}
       {{number rank.total_score}}
     {{else}}

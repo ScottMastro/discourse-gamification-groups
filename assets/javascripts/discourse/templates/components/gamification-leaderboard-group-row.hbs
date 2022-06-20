@@ -1,0 +1,20 @@
+<div class="rank-row" id="leaderboard-group-{{group.id}}">
+  <div class="rank-row__rank">{{sum index 4}}</div>
+  <div class="rank-row__flair" role="button">
+    <img src="/uploads/default/original/1X/ffb0b465acaafdc227660bb2edb15a7dca07542a.png">
+    <span class="rank-row__name">{{group.name}}</span>
+  </div>
+
+  <div class="rank-row__membership">
+    <div class="rank-row__membership-icon">{{d-icon "user"}}</div>
+    {{number group.user_count}}
+  </div>
+
+  <div class="rank-row__score">
+    {{#if site.mobileView}}
+      {{number group.total_score}}
+    {{else}}
+      {{fullnumber group.total_score}}
+    {{/if}}
+  </div>
+</div>
