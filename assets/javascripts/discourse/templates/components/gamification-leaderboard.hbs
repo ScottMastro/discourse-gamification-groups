@@ -6,31 +6,53 @@
 
   <div class="podium__wrapper">
     <div class="podium">
-      {{#each winners as |winner position|}}
-        <div class="winner -position{{sum position 1}}">
-          <div class="winner__crown">{{d-icon "crown"}}</div>
-          <div class="winner__avatar clickable" role="button" data-user-card={{ winner.username }}>
-            {{avatar winner imageSize="huge"}}
-            <div class="winner__rank">
-              <span>{{sum position 1}}</span>
+      {{#if is_group_leaderboard}}
+
+        {{#each group_winners as |winner position|}}
+          <div class="winner -position{{sum position 1}}">
+            <div class="winner__crown">{{d-icon "crown"}}</div>
+            <div class="winner__avatar">
+            <img src="/uploads/default/original/1X/267032060482edf65c3b3f253ebb091516bb1837.png">
+              <div class="winner__rank">
+                <span>{{sum position 1}}</span>
+              </div>
             </div>
+            <div class="winner__name">{{ winner.name }}{{" | "}}{{d-icon "user"}}{{ winner.user_count }}</div>
+            <div class="winner__score">{{ fullnumber winner.total_score }}</div>
           </div>
-          <div class="winner__name">{{ winner.username }}</div>
-          <div class="winner__score">{{ fullnumber winner.total_score }}</div>
-        </div>
-      {{/each}}
+        {{/each}}
+
+      {{else}}
+      
+        {{#each winners as |winner position|}}
+          <div class="winner -position{{sum position 1}}">
+            <div class="winner__crown">{{d-icon "crown"}}</div>
+            <div class="winner__avatar clickable" role="button" data-user-card={{ winner.username }}>
+              {{avatar winner imageSize="huge"}}
+              <div class="winner__rank">
+                <span>{{sum position 1}}</span>
+              </div>
+            </div>
+            <div class="winner__name">{{ winner.username }}</div>
+            <div class="winner__score">{{ fullnumber winner.total_score }}</div>
+          </div>
+        {{/each}}
+
+      {{/if}}
     </div>
 
     {{#if is_group_leaderboard}}
-      <div class="ranking-col-group ranking-col-names">
-        <span>Rank</span>
-        <span>{{d-icon "award"}}{{i18n "gamification.score"}}</span>
-      </div>
-      <div class="group__ranking">
-        {{#each model.groups as |group index|}}
-          {{gamification-leaderboard-group-row group=group index=index}}
-        {{/each}}
-      </div>
+      {{#if group_ranking}}
+        <div class="ranking-col-names ranking-col-group">
+          <span>Rank</span>
+          <span>{{d-icon "award"}}{{i18n "gamification.score"}}</span>
+        </div>
+        <div class="group__ranking">
+          {{#each group_ranking as |group index|}}
+            {{gamification-leaderboard-group-row group=group index=index}}
+          {{/each}}
+        </div>
+      {{/if}}
     {{/if}}
   </div>
 
