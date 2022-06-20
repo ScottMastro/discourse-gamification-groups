@@ -1,0 +1,13 @@
+{{#if group.flair_url}}
+  {{#if group.flair_bg_color}}
+    <img src="{{group.flair_url}}" style="background-color:#{{group.flair_bg_color}};">
+  {{else}}
+    <img src="{{group.flair_url}}">
+  {{/if}}
+{{else}}
+  {{#if group.flair_bg_color}}
+    <img src="/images/transparent.png" style="background-color:#{{group.flair_bg_color}};">
+  {{else}}
+  <img src="/images/avatar.png" style="background-color:#000000;">
+  {{/if}}
+{{/if}}

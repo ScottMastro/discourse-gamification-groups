@@ -243,15 +243,26 @@
       color: var(--secondary);
     }
 
-    // group css
     &__flair {
       margin: 0 1rem 0 1rem;
-      
+      display: flex;
+      align-items: center;
+
       img {
         margin-right: 1rem;
         border-radius: 50%;
         width: 50px;
         height: 50px;
+      }
+    }
+
+    &__membership-flairs{
+      display: flex;
+      flex-grow: 4;
+      img {
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
       }
     }
 
@@ -265,12 +276,10 @@
   .ranking-col-group {
     background-color: var(--tertiary-rgb) !important;
     border-bottom: none !important;
-
   }
 
   .group-breakdown-header{
     font-size: var(--font-up-4);
     text-align: center;
-
   }
 }

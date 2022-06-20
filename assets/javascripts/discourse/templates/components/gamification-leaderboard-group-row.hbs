@@ -1,11 +1,7 @@
 <div class="rank-row" id="leaderboard-group-{{group.id}}">
   <div class="rank-row__rank">{{sum index 4}}</div>
   <div class="rank-row__flair" role="button">
-    {{#if group.flair_bg_color}}
-      <img src="/uploads/default/original/1X/ffb0b465acaafdc227660bb2edb15a7dca07542a.png" style="background-color:#{{group.flair_bg_color}};">
-    {{else}}
-      <img src="/uploads/default/original/1X/ffb0b465acaafdc227660bb2edb15a7dca07542a.png">
-    {{/if}}
+    {{gamification-leaderboard-group-flair group=winner}}
     <span class="rank-row__name">{{group.name}}</span>
   </div>
 

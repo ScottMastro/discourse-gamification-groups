@@ -24,18 +24,14 @@ export default Component.extend(LoadMore, {
     return users.slice(0, 3);
   },
 
-  is_group_leaderboard() {
-    return this.model.leaderboard.is_group_leaderboard;
-  },
-
   @discourseComputed("model.groups")
   group_ranking(groups) {
     return groups.slice(3);
   },
 
   @discourseComputed("model.groups")
-  group_winners() {
-    return this.model.groups.slice(0, 3);
+  group_winners(groups) {
+    return groups.slice(0, 3);
   },
 
   @discourseComputed("model.users.[]")
@@ -46,8 +42,6 @@ export default Component.extend(LoadMore, {
         user.isCurrentUser = "true";
       }
     });
-
-    console.log(this.model)
 
     if (this.model.leaderboard.is_group_leaderboard){
       return users;

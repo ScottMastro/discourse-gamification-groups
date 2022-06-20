@@ -8,6 +8,13 @@
     {{avatar rank imageSize="large"}}
     <span class="rank-row__name">{{rank.username}}</span>
   </div>
+  {{#if is_group_leaderboard}}
+  <div class="rank-row__membership-flairs">
+    {{#each rank.groups as |group|}}
+      {{gamification-leaderboard-group-flair group=group}}
+    {{/each}}
+  </div>
+  {{/if}}
   <div class="rank-row__score">
     {{#if site.mobileView}}
       {{number rank.total_score}}

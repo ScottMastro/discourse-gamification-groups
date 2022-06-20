@@ -6,17 +6,13 @@
 
   <div class="podium__wrapper">
     <div class="podium">
-      {{#if is_group_leaderboard}}
+      {{#if model.leaderboard.is_group_leaderboard}}
 
         {{#each group_winners as |winner position|}}
           <div class="winner -position{{sum position 1}}">
             <div class="winner__crown">{{d-icon "crown"}}</div>
             <div class="winner__avatar">
-            {{#if winner.flair_bg_color}}
-              <img src="/uploads/default/original/1X/267032060482edf65c3b3f253ebb091516bb1837.png" style="background-color:#{{winner.flair_bg_color}};">
-            {{else}}
-              <img src="/uploads/default/original/1X/267032060482edf65c3b3f253ebb091516bb1837.png">
-            {{/if}}
+              {{gamification-leaderboard-group-flair group=winner}}
               <div class="winner__rank">
                 <span>{{sum position 1}}</span>
               </div>
@@ -45,7 +41,7 @@
       {{/if}}
     </div>
 
-    {{#if is_group_leaderboard}}
+    {{#if model.leaderboard.is_group_leaderboard}}
       {{#if group_ranking}}
         <div class="ranking-col-names ranking-col-group">
           <span>Rank</span>
@@ -60,9 +56,8 @@
     {{/if}}
   </div>
 
-
   <div class="ranking">
-    {{#if is_group_leaderboard}}
+    {{#if model.leaderboard.is_group_leaderboard}}
       <div class="group-breakdown-header">{{i18n "gamification.leaderboard.group_user_breakdown"}}</div>
       <hr>
     {{/if}}
@@ -72,10 +67,10 @@
     </div>
     <div class="ranking-col-names__sticky-border"></div>
     {{#if currentUserRanking.user}}
-      <a href="#leaderboard-user-{{ currentUserRanking.user.id }}" class="user -self">
-        <div class="user__rank">{{ currentUserRanking.position }}</div>
-        <div class="user__name">{{i18n "gamification.you"}}</div>
-        <div class="user__score">
+      <a href="#leaderboard-user-{{ currentUserRanking.user.id }}" class="rank-row -self">
+        <div class="rank-row__rank">{{ currentUserRanking.position }}</div>
+        <div class="rank-row__name">{{i18n "gamification.you"}}</div>
+        <div class="rank-row__score">
           {{#if site.mobileView}}
             {{number currentUserRanking.user.total_score}}
           {{else}}
@@ -88,7 +83,7 @@
 
     {{#load-more selector=".user" action=(action "loadMore")}}
       {{#each ranking as |rank index|}}
-        {{gamification-leaderboard-row rank=rank index=index is_group_leaderboard=is_group_leaderboard}}
+        {{gamification-leaderboard-row rank=rank index=index is_group_leaderboard=model.leaderboard.is_group_leaderboard}}
       {{/each}}
     {{/load-more}}
     {{conditional-loading-spinner condition=loading}}
