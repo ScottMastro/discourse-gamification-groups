@@ -12,12 +12,16 @@
           <div class="winner -position{{sum position 1}}">
             <div class="winner__crown">{{d-icon "crown"}}</div>
             <div class="winner__avatar">
-            <img src="/uploads/default/original/1X/267032060482edf65c3b3f253ebb091516bb1837.png">
+            {{#if winner.flair_bg_color}}
+              <img src="/uploads/default/original/1X/267032060482edf65c3b3f253ebb091516bb1837.png" style="background-color:#{{winner.flair_bg_color}};">
+            {{else}}
+              <img src="/uploads/default/original/1X/267032060482edf65c3b3f253ebb091516bb1837.png">
+            {{/if}}
               <div class="winner__rank">
                 <span>{{sum position 1}}</span>
               </div>
             </div>
-            <div class="winner__name">{{ winner.name }}{{" | "}}{{d-icon "user"}}{{ winner.user_count }}</div>
+            <div class="winner__name">{{ winner.name }}{{" | "}}{{d-icon "user"}} {{ winner.user_count }}</div>
             <div class="winner__score">{{ fullnumber winner.total_score }}</div>
           </div>
         {{/each}}
