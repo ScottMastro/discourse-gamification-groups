@@ -39,15 +39,17 @@ class DiscourseGamification::GamificationLeaderboard < ::ActiveRecord::Base
     join_sql2 = "LEFT OUTER JOIN uploads ON uploads.id = groups.flair_upload_id"
 
     sum_sql = "SUM(COALESCE(gamification_scores.score, 0)) as total_score"
-
+    select_by = "groups.id as id, groups.name as name, uploads.url as flair_url, groups.flair_color, groups.flair_bg_color, groups.user_count, #{sum_sql}"
+    
     users = User.joins(:primary_email).real.where.not("user_emails.email LIKE '%@anonymized.invalid%'").where(staged: false).joins(join_sql)
     users = users.joins(:groups).where(groups: { id: leaderboard.included_groups_ids }) if leaderboard.included_groups_ids.present?
     users = users.where("gamification_scores.date BETWEEN ? AND ?", leaderboard.from_date, leaderboard.to_date) if leaderboard.from_date.present?
     # calculate scores up to to_date if just to_date is present
     users = users.where("gamification_scores.date <= ?", leaderboard.to_date) if leaderboard.to_date != Date.today && !leaderboard.from_date.present?
     users = users.joins(join_sql2)
-    groups = users.select("groups.id as id, groups.name as name, uploads.url as flair_url, groups.flair_color, groups.flair_bg_color, groups.user_count, #{sum_sql}").group("groups.id", "uploads.id")
-    
+    groups = users.select(select_by).group("groups.id", "uploads.id")
+    groups = groups.sort_by{ |group| -group.total_score }
+
     groups
   end
 end
