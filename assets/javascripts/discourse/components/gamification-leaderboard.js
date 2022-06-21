@@ -37,7 +37,15 @@ export default Component.extend(LoadMore, {
   @discourseComputed("model.users.[]")
   ranking(users) {
 
+    var group_url = {}
+    for (let i = 0; i < this.model.groups.length; i++){
+      group_url[this.model.groups[i].id] = this.model.groups[i].flair_url
+    }
+
     users.forEach((user) => {
+      for (let i = 0; i < user.groups.length; i++){
+        user.groups[i].flair_url = group_url[user.groups[i].id]
+      }
       if (user.id === this.currentUser?.id) {
         user.isCurrentUser = "true";
       }
@@ -65,7 +73,6 @@ export default Component.extend(LoadMore, {
 
     return ajax(`/leaderboard/${this.model.leaderboard.id}?page=${this.page}`)
       .then((result) => {
-        console.log(result)
         if (result.users.length === 0) {
           this.set("canLoadMore", false);
         }
