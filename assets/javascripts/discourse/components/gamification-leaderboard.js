@@ -43,8 +43,13 @@ export default Component.extend(LoadMore, {
     }
 
     users.forEach((user) => {
-      for (let i = 0; i < user.groups.length; i++){
-        user.groups[i].flair_url = group_url[user.groups[i].id]
+      for (let i = user.groups.length-1; i >= 0; i--){
+        if (!( user.groups[i].id in group_url)){
+          user.groups.splice(i, 1);
+        }
+        else{
+        user.groups[i].flair_url = group_url[user.groups[i].id];
+        }
       }
       if (user.id === this.currentUser?.id) {
         user.isCurrentUser = "true";
