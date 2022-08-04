@@ -181,6 +181,12 @@
     }
   }
 
+  .podium__wrapper{
+    .ranking-col-names {
+      position: inherit !important;
+    }
+  }
+
   .rank-row {
     display: flex;
     justify-content: space-between;

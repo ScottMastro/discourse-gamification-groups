@@ -12,7 +12,7 @@ class DiscourseGamification::GamificationLeaderboard < ::ActiveRecord::Base
     leaderboard.to_date ||= Date.today
 
     join_sql = "LEFT OUTER JOIN gamification_scores ON gamification_scores.user_id = users.id"
-    sum_sql = "SUM(COALESCE(gamification_scores.score, 0)) as total_score"
+    sum_sql = "SUM(COALESCE(gamification_scores.score, 0)) / COUNT(DISTINCT(groups.id)) as total_score"
 
     users = User.joins(:primary_email).real.where.not("user_emails.email LIKE '%@anonymized.invalid%'").where(staged: false).joins(join_sql)
     users = users.joins(:groups).where(groups: { id: leaderboard.included_groups_ids }) if leaderboard.included_groups_ids.present?
@@ -20,6 +20,8 @@ class DiscourseGamification::GamificationLeaderboard < ::ActiveRecord::Base
     # calculate scores up to to_date if just to_date is present
     users = users.where("gamification_scores.date <= ?", leaderboard.to_date) if leaderboard.to_date != Date.today && !leaderboard.from_date.present?
     users = users.select("users.id, users.username, users.uploaded_avatar_id, #{sum_sql}").group("users.id").order(total_score: :desc, id: :asc)
+
+    
     if for_user_id
       user = users.find_by(id: for_user_id)
       index = users.index(user)
@@ -42,13 +44,43 @@ class DiscourseGamification::GamificationLeaderboard < ::ActiveRecord::Base
     select_by = "groups.id as id, groups.name as name, uploads.url as flair_url, groups.flair_color, groups.flair_bg_color, groups.user_count, #{sum_sql}"
     
     users = User.joins(:primary_email).real.where.not("user_emails.email LIKE '%@anonymized.invalid%'").where(staged: false).joins(join_sql)
-    users = users.joins(:groups).where(groups: { id: leaderboard.included_groups_ids }) if leaderboard.included_groups_ids.present?
     users = users.where("gamification_scores.date BETWEEN ? AND ?", leaderboard.from_date, leaderboard.to_date) if leaderboard.from_date.present?
     # calculate scores up to to_date if just to_date is present
     users = users.where("gamification_scores.date <= ?", leaderboard.to_date) if leaderboard.to_date != Date.today && !leaderboard.from_date.present?
+    users = users.joins(:groups).where(groups: { id: leaderboard.included_groups_ids }) if leaderboard.included_groups_ids.present?
     users = users.joins(join_sql2)
+
+    split_select = "users.username as name, users.id as id, array_agg(DISTINCT(groups.id)) as groups, COUNT(DISTINCT(users.id, groups.id)) as count, SUM(COALESCE(gamification_scores.score, 0)) as score"
+    user_split = users.select(split_select).group("users.id").having("COUNT(DISTINCT(users.id, groups.id))>1")
+
     groups = users.select(select_by).group("groups.id", "uploads.id")
     groups = groups.sort_by{ |group| -group.total_score }
+
+    #subtract if user belongs to multiple groups
+    #(split score even across groups)
+    minus_group = { }
+
+    user_split.each { |usr| 
+      total_score = usr[:score]/usr[:count]
+      minus_score = total_score * (usr[:count]-1)/usr[:count]
+
+      STDERR.puts "score:", total_score, minus_score
+      usr[:groups].each { |grp|
+      
+        if minus_group.key?(grp)
+          minus_group[grp] += minus_score
+        else
+          minus_group[grp] = minus_score
+        end  
+
+      }
+    }
+    
+    groups.each { |group| 
+      if minus_group.key?(group[:id])
+        group[:total_score] -= minus_group[group[:id]]
+      end  
+    }
 
     groups
   end
