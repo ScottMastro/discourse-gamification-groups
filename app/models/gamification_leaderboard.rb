@@ -81,6 +81,8 @@ class DiscourseGamification::GamificationLeaderboard < ::ActiveRecord::Base
         group[:total_score] -= minus_group[group[:id]]
       end  
     }
+    
+    groups = groups.sort_by { |group| -group[:total_score] }
 
     groups
   end
