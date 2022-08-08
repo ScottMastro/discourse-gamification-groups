@@ -50,39 +50,38 @@ class DiscourseGamification::GamificationLeaderboard < ::ActiveRecord::Base
     users = users.joins(:groups).where(groups: { id: leaderboard.included_groups_ids }) if leaderboard.included_groups_ids.present?
     users = users.joins(join_sql2)
 
-    split_select = "users.username as name, users.id as id, array_agg(DISTINCT(groups.id)) as groups, COUNT(DISTINCT(users.id, groups.id)) as count, SUM(COALESCE(gamification_scores.score, 0)) as score"
-    user_split = users.select(split_select).group("users.id").having("COUNT(DISTINCT(users.id, groups.id))>1")
+    #split_select = "users.username as name, users.id as id, array_agg(DISTINCT(groups.id)) as groups, COUNT(DISTINCT(users.id, groups.id)) as count, #SUM(COALESCE(gamification_scores.score, 0)) as score"
+    #user_split = users.select(split_select).group("users.id").having("COUNT(DISTINCT(users.id, groups.id))>1")
 
-    groups = users.select(select_by).group("groups.id", "uploads.id")
-    groups = groups.sort_by{ |group| -group.total_score }
+    #groups = users.select(select_by).group("groups.id", "uploads.id")
+    #groups = groups.sort_by{ |group| -group.total_score }
 
-    #subtract if user belongs to multiple groups
-    #(split score even across groups)
-    minus_group = { }
+    ##subtract if user belongs to multiple groups
+    ##(split score even across groups)
+    #minus_group = { }
 
-    user_split.each { |usr| 
-      total_score = usr[:score]/usr[:count]
-      minus_score = total_score * (usr[:count]-1)/usr[:count]
+    #user_split.each { |usr| 
+    #  total_score = usr[:score]/usr[:count]
+    #  minus_score = total_score * (usr[:count]-1)/usr[:count]
 
-      STDERR.puts "score:", total_score, minus_score
-      usr[:groups].each { |grp|
+    #  usr[:groups].each { |grp|
       
-        if minus_group.key?(grp)
-          minus_group[grp] += minus_score
-        else
-          minus_group[grp] = minus_score
-        end  
+    #    if minus_group.key?(grp)
+    #      minus_group[grp] += minus_score
+    #    else
+    #      minus_group[grp] = minus_score
+    #    end  
 
-      }
-    }
+    #  }
+    #}
     
-    groups.each { |group| 
-      if minus_group.key?(group[:id])
-        group[:total_score] -= minus_group[group[:id]]
-      end  
-    }
+    #groups.each { |group| 
+    #  if minus_group.key?(group[:id])
+    #    group[:total_score] -= minus_group[group[:id]]
+    #  end  
+    #}
     
-    groups = groups.sort_by { |group| -group[:total_score] }
+    #groups = groups.sort_by { |group| -group[:total_score] }
 
     groups
   end
